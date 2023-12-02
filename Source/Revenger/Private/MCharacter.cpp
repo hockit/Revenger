@@ -4,6 +4,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MAttributeComponent.h"
+#include "Animation/AnimMontage.h"
 
 AMCharacter::AMCharacter()
 {
@@ -20,6 +21,10 @@ AMCharacter::AMCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	AttributeComp = CreateDefaultSubobject<UMAttributeComponent>("AttributeComp");
+
+	IsDodging = false;
+	IsAttacking = false;
+	AttackCount = 0;
 }
 
 
@@ -30,6 +35,62 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+
+	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AMCharacter::Dodge);
+	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &AMCharacter::PrimaryAttack);
+}
+void AMCharacter::Dodge()
+{
+	IsDodging = true;
+	GetWorldTimerManager().SetTimer(TimerHandle_Dodge, this, &AMCharacter::Dodge_TimeElapsed, 1.f);
+}
+
+void AMCharacter::Dodge_TimeElapsed()
+{
+	IsDodging = false;
+}
+
+void AMCharacter::PrimaryAttack()
+{
+	if (!IsAttacking)
+	{
+		IsAttacking = true;
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance && CombatMontage)
+		{
+			switch (AttackCount)
+			{
+			case 0:
+				AttackCount++;
+				AnimInstance->Montage_Play(CombatMontage, 1.35f);
+				AnimInstance->Montage_JumpToSection(FName("Attack01"), CombatMontage);
+				break;
+			case 1:
+				AttackCount++;
+				AnimInstance->Montage_Play(CombatMontage, 1.35f);
+				AnimInstance->Montage_JumpToSection(FName("Attack02"), CombatMontage);
+				break;
+			case 2:
+				AttackCount++;
+				AnimInstance->Montage_Play(CombatMontage, 1.35f);
+				AnimInstance->Montage_JumpToSection(FName("Attack03"), CombatMontage);
+				break;
+			case 3:
+				AttackCount = 0;
+				AnimInstance->Montage_Play(CombatMontage, 1.35f);
+				AnimInstance->Montage_JumpToSection(FName("Attack04"), CombatMontage);
+				break;
+			default:
+				break;
+			}
+			
+		}
+	}
+}
+
+void AMCharacter::AttackEnd()
+{
+	IsAttacking = false;
 }
 
 void AMCharacter::MoveForward(float Value)
