@@ -4,6 +4,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MAttributeComponent.h"
+#include "MInteractionComponent.h"
 #include "Animation/AnimMontage.h"
 
 AMCharacter::AMCharacter()
@@ -21,6 +22,7 @@ AMCharacter::AMCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	AttributeComp = CreateDefaultSubobject<UMAttributeComponent>("AttributeComp");
+	InteractionComp = CreateDefaultSubobject<UMInteractionComponent>("InteractionComp");
 
 	IsDodging = false;
 	IsAttacking = false;
@@ -36,6 +38,7 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMCharacter::Interact);
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AMCharacter::Dodge);
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &AMCharacter::PrimaryAttack);
 }
@@ -77,7 +80,7 @@ void AMCharacter::PrimaryAttack()
 				break;
 			case 3:
 				AttackCount = 0;
-				AnimInstance->Montage_Play(CombatMontage, 1.35f);
+				AnimInstance->Montage_Play(CombatMontage, 0.85f);
 				AnimInstance->Montage_JumpToSection(FName("Attack04"), CombatMontage);
 				break;
 			default:
@@ -91,6 +94,19 @@ void AMCharacter::PrimaryAttack()
 void AMCharacter::AttackEnd()
 {
 	IsAttacking = false;
+}
+
+void AMCharacter::ResetCombo()
+{
+	AttackCount = 0;
+}
+
+void AMCharacter::Interact()
+{
+	if (InteractionComp)
+	{
+		InteractionComp->PrimaryInteract();
+	}
 }
 
 void AMCharacter::MoveForward(float Value)

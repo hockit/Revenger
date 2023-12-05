@@ -9,6 +9,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UMAttributeComponent;
+class UMInteractionComponent;
 class UAnimMontage;
 
 UCLASS()
@@ -31,6 +32,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UMAttributeComponent* AttributeComp;
 
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UMInteractionComponent* InteractionComp;
+
 	FTimerHandle TimerHandle_Dodge;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AnimMontage | Combat")
@@ -43,9 +47,13 @@ protected:
 	void Dodge();
 	void Dodge_TimeElapsed();
 	void PrimaryAttack();
+	void Interact();
 
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
+
+	UFUNCTION(BlueprintCallable)
+	void ResetCombo();
 
 	// VARIABLES
 	bool IsDodging;
