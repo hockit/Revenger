@@ -43,6 +43,7 @@ AMCharacter::AMCharacter()
 
 	IsDodging = false;
 	IsAttacking = false;
+	IsSprinting = false;
 	AttackCount = 0;
 }
 
@@ -55,7 +56,6 @@ void AMCharacter::BeginPlay()
 	RightLegBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-
 void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -67,6 +67,8 @@ void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMCharacter::Interact);
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AMCharacter::Dodge);
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &AMCharacter::PrimaryAttack);
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AMCharacter::SprintStart);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AMCharacter::SprintStop);
 }
 
 void AMCharacter::Dodge()
@@ -128,7 +130,7 @@ void AMCharacter::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 		if (AttributeComponent)
 		{
 			UE_LOG(LogTemp, Display, TEXT("Enemy Hit"));
-			AttributeComponent->ApplyHealthChange(-5.f);
+			AttributeComponent->ApplyHealthChange(-25.f);
 		}
 	}
 }
@@ -188,6 +190,18 @@ void AMCharacter::Interact()
 	{
 		InteractionComp->PrimaryInteract();
 	}
+}
+
+void AMCharacter::SprintStart()
+{
+	IsSprinting = true;
+	GetCharacterMovement()->MaxWalkSpeed = 1200.f;
+}
+
+void AMCharacter::SprintStop()
+{
+	IsSprinting = false;
+	GetCharacterMovement()->MaxWalkSpeed = 600.f;
 }
 
 void AMCharacter::MoveForward(float Value)

@@ -61,6 +61,8 @@ protected:
 	void Dodge();
 	void PrimaryAttack();
 	void Interact();
+	void SprintStart();
+	void SprintStop();
 
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
@@ -93,6 +95,9 @@ protected:
 	// VARIABLES
 	UPROPERTY(BlueprintReadOnly)
 	bool IsDodging;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool IsSprinting;
 
 	// Attack variables
 	bool IsAttacking;
