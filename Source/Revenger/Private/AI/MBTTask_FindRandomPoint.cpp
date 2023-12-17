@@ -16,7 +16,7 @@ EBTNodeResult::Type UMBTTask_FindRandomPoint::ExecuteTask(UBehaviorTreeComponent
 
 	if (BlackboardComp)
 	{
-		APawn* ControlledPawn = OwnerComp.GetAIOwner()->GetPawn();		
+		ACharacter* ControlledPawn = Cast<ACharacter>(OwnerComp.GetAIOwner()->GetPawn());		
 		if (ControlledPawn)
 		{
 			FVector RandomLocation;
