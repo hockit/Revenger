@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -21,26 +19,15 @@ class REVENGER_API AMCharacter : public ACharacter
 public:
 
 	AMCharacter();
+	void HitDetection();
+
 protected:
-	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComp;
-
-	UPROPERTY(VisibleAnywhere, Category = "Collision")
-	UBoxComponent* LeftHandBox;
-
-	UPROPERTY(VisibleAnywhere, Category = "Collision")
-	UBoxComponent* RightHandBox;
-
-	UPROPERTY(VisibleAnywhere, Category = "Collision")
-	UBoxComponent* LeftLegBox;
-
-	UPROPERTY(VisibleAnywhere, Category = "Collision")
-	UBoxComponent* RightLegBox;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UMAttributeComponent* AttributeComp;
@@ -49,7 +36,7 @@ protected:
 	UMInteractionComponent* InteractionComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AnimMontage | Combat")
-	UAnimMontage* CombatMontage;
+	TArray<UAnimMontage*> CombatArrayMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AnimMontage | Dodge")
 	UAnimMontage* DodgeMontage;
@@ -72,25 +59,6 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void DodgeEnd();
-
-
-	UFUNCTION(BlueprintCallable)
-	void Hand_L_ActivateCollision();
-
-	UFUNCTION(BlueprintCallable)
-	void Hand_R_ActivateCollision();
-
-	UFUNCTION(BlueprintCallable)
-	void Leg_L_ActivateCollision();
-
-	UFUNCTION(BlueprintCallable)
-	void Leg_R_ActivateCollision();
-
-	UFUNCTION(BlueprintCallable)
-	void DeactivateCollision();
-
-	UFUNCTION()
-	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	// VARIABLES
 	UPROPERTY(BlueprintReadOnly)
