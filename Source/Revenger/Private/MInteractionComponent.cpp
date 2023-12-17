@@ -38,7 +38,8 @@ void UMInteractionComponent::PrimaryInteract()
 			if (HitActor->Implements< UMGameplayInterface>())
 			{
 				APawn* MyPawn = Cast<APawn>(MyActor);
-				IMGameplayInterface::Execute_Interact(HitActor, MyPawn);			}
+				IMGameplayInterface::Execute_Interact(HitActor, MyPawn);			
+			}
 		}
 		DrawDebugSphere(GetWorld(), Hit.ImpactPoint, Radius, 24, LineColor, false, 2.f);
 		break;
