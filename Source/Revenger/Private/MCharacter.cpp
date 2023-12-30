@@ -87,26 +87,6 @@ void AMCharacter::PrimaryAttack()
 	}
 }
 
-void AMCharacter::HitDetection()
-{
-	
-	FVector StartLocation = GetMesh()->GetSocketLocation("hand_l");
-	FVector EndLocation = StartLocation;
-	float SphereRadius = 20.f;
-	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes{ UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
-	FHitResult OutHit;
-
-	bool bBlockHit = UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), StartLocation, EndLocation, SphereRadius, ObjectTypes, false, TArray<AActor*>(), EDrawDebugTrace::ForDuration, OutHit, true);
-	if (bBlockHit)
-	{
-		ACharacter* HitActor = Cast<ACharacter>(OutHit.GetActor());
-		if (HitActor && HitActor != GetInstigator())
-		{
-			UE_LOG(LogTemp, Display, TEXT("Hit Actor: %s"), *HitActor->GetName());
-		}
-	}
-}
-
 void AMCharacter::AttackEnd()
 {
 	IsAttacking = false;

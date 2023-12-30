@@ -19,7 +19,6 @@ class REVENGER_API AMCharacter : public ACharacter
 public:
 
 	AMCharacter();
-	void HitDetection();
 
 protected:
 
