@@ -11,27 +11,9 @@ void UMHitDetectionState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSeq
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration);
 
-	FVector StartTrace = MeshComp->GetSocketLocation("hand_l");
-	FVector EndTrace = StartTrace;
-	float Radius = 20.f;
-
-	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes{ UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
-	TArray<AActor*> ActorsToIgnore;
-	ActorsToIgnore.Add(MeshComp->GetOwner());
-	FHitResult OutHit;
-
-	bool bHit = UKismetSystemLibrary::SphereTraceSingleForObjects(MeshComp, StartTrace, EndTrace, Radius, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true);
-
-	if (bHit)
+	AMCharacter* MyCharacter = Cast<AMCharacter>(MeshComp->GetOwner());
+	if (MyCharacter)
 	{
-		ACharacter* HitActor = Cast<ACharacter>(OutHit.GetActor());
-		if (HitActor)
-		{
-			UMAttributeComponent* AttributeComp = Cast<UMAttributeComponent>(HitActor->GetComponentByClass(UMAttributeComponent::StaticClass()));
-			if (AttributeComp)
-			{
-				AttributeComp->ApplyHealthChange(-1.f);
-			}
-		}
+		MyCharacter->HitDetection();
 	}
 }
