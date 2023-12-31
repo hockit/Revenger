@@ -19,6 +19,7 @@ class REVENGER_API AMCharacter : public ACharacter
 public:
 
 	AMCharacter();
+	void HitDetection();
 
 protected:
 
@@ -69,6 +70,8 @@ protected:
 	// Attack variables
 	bool IsAttacking;
 	int AttackCount;
+	FName SocketName;
+
 public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

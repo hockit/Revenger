@@ -80,10 +80,44 @@ void AMCharacter::PrimaryAttack()
 			{
 				AttackCount = 0;
 			}
+			switch (AttackCount)
+			{
+			case 0: SocketName = "hand_l"; break;
+			case 1: SocketName = "hand_r"; break;
+			case 2: SocketName = "hand_l"; break;
+			case 3: SocketName = "foot_r"; break;
+			}
 			AnimInstance->Montage_Play(CombatArrayMontage[AttackCount]);
 			AttackCount++;
 		}
 		IsDodging = false;
+	}
+}
+
+void AMCharacter::HitDetection()
+{
+	FVector StartTrace = GetMesh()->GetSocketLocation(SocketName);
+	FVector EndTrace = StartTrace;
+	float Radius = 20.f;
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes{ UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn) };
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(GetInstigator());
+	FHitResult OutHit;
+
+	bool bHit = UKismetSystemLibrary::SphereTraceSingleForObjects(GetMesh(), StartTrace, EndTrace, Radius, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true);
+
+	if (bHit)
+	{
+		ACharacter* HitActor = Cast<ACharacter>(OutHit.GetActor());
+		if (HitActor)
+		{
+			UMAttributeComponent* AttributeComponent = Cast<UMAttributeComponent>(HitActor->GetComponentByClass(UMAttributeComponent::StaticClass()));
+			if (AttributeComponent)
+			{
+				AttributeComponent->ApplyHealthChange(-1.f);
+			}
+		}
 	}
 }
 
