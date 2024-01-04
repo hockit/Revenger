@@ -1,10 +1,8 @@
 
 #include "MHitDetectionState.h"
 #include "DrawDebugHelpers.h"
-#include "GameFramework/Character.h"
 #include "MCharacter.h"
-#include "Kismet/KismetSystemLibrary.h"
-#include "MAttributeComponent.h"
+#include "AI/MAICharacter_Base.h"
 
 
 void UMHitDetectionState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
@@ -15,5 +13,11 @@ void UMHitDetectionState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSeq
 	if (MyCharacter)
 	{
 		MyCharacter->HitDetection();
+	}
+
+	AMAICharacter_Base* MyAICharacter = Cast<AMAICharacter_Base>(MeshComp->GetOwner());
+	if (MyAICharacter)
+	{
+		MyAICharacter->HitDetection();
 	}
 }
