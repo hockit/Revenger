@@ -38,6 +38,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AnimMontage | Combat")
 	TArray<UAnimMontage*> CombatArrayMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category = "AnimMontage | Combat")
+	UAnimMontage* SprintAttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AnimMontage | Combat")
+	UAnimMontage* HitReaction;
+
 	UPROPERTY(EditDefaultsOnly, Category = "AnimMontage | Dodge")
 	UAnimMontage* DodgeMontage;
 

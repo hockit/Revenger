@@ -34,7 +34,6 @@ AMCharacter::AMCharacter()
 	AttackCount = 0;
 }
 
-
 void AMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -70,26 +69,30 @@ void AMCharacter::DodgeEnd()
 
 void AMCharacter::PrimaryAttack()
 {
-	if (!IsAttacking)
+	if (IsSprinting)
+	{
+		UE_LOG(LogTemp, Display, TEXT("Sprint Attack"));
+		PlayAnimMontage(SprintAttackMontage);
+	}
+
+	if (!IsAttacking && !IsSprinting)
 	{
 		IsAttacking = true;
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		if (ensure(AnimInstance))
+		
+		if (AttackCount == CombatArrayMontage.Num())
 		{
-			if (AttackCount == CombatArrayMontage.Num())
-			{
-				AttackCount = 0;
-			}
-			switch (AttackCount)
-			{
-			case 0: SocketName = "hand_l"; break;
-			case 1: SocketName = "hand_r"; break;
-			case 2: SocketName = "hand_l"; break;
-			case 3: SocketName = "foot_r"; break;
-			}
-			AnimInstance->Montage_Play(CombatArrayMontage[AttackCount]);
-			AttackCount++;
+			AttackCount = 0;
 		}
+		switch (AttackCount)
+		{
+		case 0: SocketName = "hand_l"; break;
+		case 1: SocketName = "hand_r"; break;
+		case 2: SocketName = "hand_l"; break;
+		case 3: SocketName = "foot_r"; break;
+		}
+		PlayAnimMontage(CombatArrayMontage[AttackCount]);
+		AttackCount++;
+		
 		IsDodging = false;
 	}
 }
@@ -142,7 +145,7 @@ void AMCharacter::Interact()
 void AMCharacter::SprintStart()
 {
 	IsSprinting = true;
-	GetCharacterMovement()->MaxWalkSpeed = 1200.f;
+	GetCharacterMovement()->MaxWalkSpeed = 1000.f;
 }
 
 void AMCharacter::SprintStop()
